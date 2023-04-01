@@ -16,6 +16,17 @@ app.get("/user/random", (req, res) => {
     });
 });
 
+app.get("/user/all", (req, res) => {
+    fs.readFile("users.json", (err, data) => {
+        if (err) {
+            res.status(500).json("Error occured");
+        } else {
+            const users = JSON.parse(data);
+            res.status(200).json(users);
+        }
+    });
+});
+
 app.get("/", (req, res) => {
     res.send("Random User API for Node-Mongo Crash Course assingment 1");
 });
