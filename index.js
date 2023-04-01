@@ -1,7 +1,10 @@
 const express = require("express");
 const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 const app = express();
 const port = process.env.PORT || 5000;
+
+app.use(express.json());
 
 app.get("/user/random", (req, res) => {
     fs.readFile("users.json", (err, data) => {
@@ -25,6 +28,27 @@ app.get("/user/all", (req, res) => {
             res.status(200).json(users);
         }
     });
+});
+
+app.post("/user/save", (req, res) => {
+    const { name, gender, contact, address, photoUrl } = req.body;
+
+    const newUser = {
+        id: uuidv4(),
+        name,
+        gender,
+        contact,
+        address,
+        photoUrl,
+    };
+
+    const users = JSON.parse(fs.readFileSync("users.json"));
+
+    users.push(newUser);
+
+    fs.writeFileSync("users.json", JSON.stringify(users));
+
+    res.status(200).json(newUser);
 });
 
 app.get("/", (req, res) => {
