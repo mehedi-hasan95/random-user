@@ -51,6 +51,21 @@ app.post("/user/save", (req, res) => {
     res.status(200).json(newUser);
 });
 
+// PUT (update) an item by ID
+app.put("/user/update/:id", (req, res) => {
+    const allUsers = JSON.parse(fs.readFileSync("users.json"));
+    const itemIndex = allUsers.findIndex(
+        (user) => user.id === parseInt(req.params.id)
+    );
+    if (itemIndex) {
+        return res.status(404).json("Item not found");
+    }
+    const updatedItem = { ...allUsers[itemIndex], ...req.body };
+    allUsers[itemIndex] = updatedItem;
+    fs.writeFileSync("users.json", JSON.stringify(allUsers));
+    res.status(200).json(updatedItem);
+});
+
 app.get("/", (req, res) => {
     res.send("Random User API for Node-Mongo Crash Course assingment 1");
 });
