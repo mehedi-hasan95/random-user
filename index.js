@@ -6,6 +6,7 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
+// Get random user
 app.get("/user/random", (req, res) => {
     fs.readFile("users.json", (err, data) => {
         if (err) {
@@ -19,6 +20,7 @@ app.get("/user/random", (req, res) => {
     });
 });
 
+// Get all user
 app.get("/user/all", (req, res) => {
     fs.readFile("users.json", (err, data) => {
         if (err) {
@@ -30,6 +32,7 @@ app.get("/user/all", (req, res) => {
     });
 });
 
+// Create new user
 app.post("/user/save", (req, res) => {
     const { name, gender, contact, address, photoUrl } = req.body;
 
@@ -54,16 +57,30 @@ app.post("/user/save", (req, res) => {
 // PUT (update) an item by ID
 app.put("/user/update/:id", (req, res) => {
     const allUsers = JSON.parse(fs.readFileSync("users.json"));
-    const itemIndex = allUsers.findIndex(
+    const userIndex = allUsers.findIndex(
         (user) => user.id === parseInt(req.params.id)
     );
-    if (itemIndex) {
-        return res.status(404).json("Item not found");
+    if (userIndex) {
+        return res.status(404).json("User not found");
     }
-    const updatedItem = { ...allUsers[itemIndex], ...req.body };
-    allUsers[itemIndex] = updatedItem;
+    const updatedItem = { ...allUsers[userIndex], ...req.body };
+    allUsers[userIndex] = updatedItem;
     fs.writeFileSync("users.json", JSON.stringify(allUsers));
     res.status(200).json(updatedItem);
+});
+
+// DELETE an item by ID
+app.delete("/user/delete/:id", (req, res) => {
+    const allUser = JSON.parse(fs.readFileSync("users.json"));
+    const userIndex = allUser.findIndex(
+        (user) => user.id === parseInt(req.params.id)
+    );
+    if (userIndex === -1) {
+        return res.status(404).send("User not found");
+    }
+    allUser.splice(userIndex, 1);
+    fs.writeFileSync("users.json", JSON.stringify(allUser));
+    res.send("The User deleted successfully");
 });
 
 app.get("/", (req, res) => {
