@@ -54,13 +54,13 @@ app.post("/user/save", (req, res) => {
     res.status(200).json(newUser);
 });
 
-// PUT (update) an item by ID
-app.put("/user/update/:id", (req, res) => {
+// Update a user by ID
+app.patch("/user/update/:id", (req, res) => {
     const allUsers = JSON.parse(fs.readFileSync("users.json"));
     const userIndex = allUsers.findIndex(
         (user) => user.id === parseInt(req.params.id)
     );
-    if (userIndex) {
+    if (userIndex === -1) {
         return res.status(404).json("User not found");
     }
     const updatedItem = { ...allUsers[userIndex], ...req.body };
@@ -69,7 +69,7 @@ app.put("/user/update/:id", (req, res) => {
     res.status(200).json(updatedItem);
 });
 
-// DELETE an item by ID
+// DELETE a user by ID
 app.delete("/user/delete/:id", (req, res) => {
     const allUser = JSON.parse(fs.readFileSync("users.json"));
     const userIndex = allUser.findIndex(
