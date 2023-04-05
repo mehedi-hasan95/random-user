@@ -10,7 +10,7 @@ app.use(express.json());
 app.get("/user/random", (req, res) => {
     fs.readFile("users.json", (err, data) => {
         if (err) {
-            res.status(500).json("Error occured");
+            res.status(500).json("User not found");
         } else {
             const users = JSON.parse(data);
             const userId = Math.floor(Math.random() * users.length);
@@ -24,7 +24,7 @@ app.get("/user/random", (req, res) => {
 app.get("/user/all", (req, res) => {
     fs.readFile("users.json", (err, data) => {
         if (err) {
-            res.status(500).json("Error occured");
+            res.status(500).json("User not found");
         } else {
             const users = JSON.parse(data);
             res.status(200).json(users);
@@ -85,6 +85,10 @@ app.delete("/user/delete/:id", (req, res) => {
 
 app.get("/", (req, res) => {
     res.send("Random User API for Node-Mongo Crash Course assingment 1");
+});
+
+app.get("/new", (req, res) => {
+    res.send("Test API");
 });
 
 app.listen(port, () => {
